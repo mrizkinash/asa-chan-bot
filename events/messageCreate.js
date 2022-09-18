@@ -1,5 +1,7 @@
+require('dotenv').config();
+
 module.exports = (client, message) => {
-    const prefix = '!';
+    const prefix = process.env.PREFIX;
 
     if (!message.content.startsWith(prefix) || message.author.bot) return;
 
