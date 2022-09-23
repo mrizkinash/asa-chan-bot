@@ -54,11 +54,23 @@ function isKanji(char) {
     return (char >= '\u4e00' && char <= '\u9faf') || (char >= '\u3400' && char <= '\u4dbf');
 }
 
+function isHiragana(char) {
+    return (char >= '\u3041' && char <= '\u3096');
+}
+
+function isKatakana(char) {
+    return (char >= '\u30A0' && char <= '30FF');
+}
+
+function isJapanese(char) {
+    return (isHiragana(char) || isKatakana(char) || isKanji(char));
+}
+
 module.exports = {
     name: 'kanji',
     description: 'Search for a kanji/phrase in Jisho',
     async execute(client, message, args) {
-        if (args.length != 1) {
+        if (args.length != 1 || args[0]?.split('').some(char => !isJapanese(char))) {
             message.channel.send('Usage: ```!kanji [kanji/japanese phrase]```');
             return;
         }
