@@ -1,6 +1,7 @@
 const JishoAPI = require('unofficial-jisho-api');
 const { EmbedBuilder } = require('discord.js');
 // TODO: Add reaction to give examples of words starting, ending, or containing the kanji
+// TO DO: Make individual kanji show up with reactions instead of showing all of them
 function createKanjiEmbed(data) {
     const embed = new EmbedBuilder()
         .setColor(0x00FF00)
@@ -10,8 +11,8 @@ function createKanjiEmbed(data) {
             { name: 'JLPT Level', value: (data.jlptLevel || 'Unknown'), inline: true },
             { name: 'Stroke Count', value: String(data.strokeCount), inline: true },
             { name: 'Meaning', value: data.meaning },
-            { name: 'Kunyomi', value: data.kunyomi.join(', '), inline: true },
-            { name: 'Onyomi', value: data.onyomi.join(', '), inline: true },
+            { name: 'Kunyomi', value: (data.kunyomi.join(', ') || '\u200b'), inline: true },
+            { name: 'Onyomi', value: (data.onyomi.join(', ') || '\u200b'), inline: true },
             { name: '\u200b', value: '\u200b', inline: true },
             { name: 'Radical', value: data.radical.meaning.concat(' ', data.radical.symbol), inline: true },
             { name: 'Parts', value: data.parts.join(', '), inline: true },
@@ -21,7 +22,7 @@ function createKanjiEmbed(data) {
 
     return embed;
 }
-// TO DO: Make it possible to search individual kanji in the phrase
+
 function createPhraseEmbed(data) {
     const reading = data.japanese
         .map(japanese => japanese.word.concat(` (${japanese.reading})`))
@@ -49,6 +50,10 @@ function createPhraseEmbed(data) {
     return embed;
 }
 
+function isKanji(char) {
+    return (char >= '\u4e00' && char <= '\u9faf') || (char >= '\u3400' && char <= '\u4dbf');
+}
+
 module.exports = {
     name: 'kanji',
     description: 'Search for a kanji/phrase in Jisho',
@@ -60,29 +65,52 @@ module.exports = {
 
         const jisho = new JishoAPI();
 
-        if (args[0].length > 1) {
-            const [result, extraResult] =
-                await Promise.all([jisho.searchForPhrase(args[0]), jisho.scrapeForPhrase(args[0])]);
+        try {
 
-            if (result.meta.status == 200) {
-                result.data[0].uri = extraResult?.uri;
-                const embed = createPhraseEmbed(result.data[0]);
+            if (args[0].length > 1) {
+                const kanjis = args[0].split('').filter(isKanji);
+                const tasks =
+                    [jisho.searchForPhrase(args[0]), jisho.scrapeForPhrase(args[0])]
+                        .concat(kanjis.map(kanji => jisho.searchForKanji(kanji)));
 
-                message.channel.send({ embeds: [embed] });
+                const [phraseResult, phraseURI, ...kanjisResult] =
+                    await Promise.allSettled(tasks);
+
+                if (phraseResult.value.meta.status == 200) {
+                    phraseResult.value.data[0].uri = phraseURI?.value.uri;
+                    const phraseEmbed = createPhraseEmbed(phraseResult.value.data[0]);
+
+                    let i = 0;
+                    const kanjisEmbed = [];
+                    while (i < kanjis.length) {
+                        if (kanjisResult[i].value.found) {
+                            kanjisResult[i].value.query = kanjis[i];
+                            kanjisEmbed.push(createKanjiEmbed(kanjisResult[i].value));
+                        }
+                        i++;
+                    }
+
+                    message.channel.send({ embeds: [phraseEmbed].concat(kanjisEmbed) });
+                } else {
+                    message.channel.send('Phrase not found');
+                }
+
             } else {
-                message.channel.send('Phrase not found');
-            }
-        } else {
-            const result = await jisho.searchForKanji(args[0]);
+                const result = await jisho.searchForKanji(args[0]);
 
-            if (result.found) {
-                result.query = args[0];
-                const embed = createKanjiEmbed(result);
+                if (result.found) {
+                    result.query = args[0];
+                    const embed = createKanjiEmbed(result);
 
-                message.channel.send({ embeds: [embed] });
-            } else {
-                message.channel.send('Kanji not found');
+                    message.channel.send({ embeds: [embed] });
+                } else {
+                    message.channel.send('Kanji not found');
+                }
             }
+
+        } catch (error) {
+            console.log(error);
+            message.channel.send('An error occured while finding kanji');
         }
     },
 };
