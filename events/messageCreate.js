@@ -10,5 +10,5 @@ module.exports = (client, message) => {
 
     const clientCommand = client.commands.get(inputCommand);
 
-    if (clientCommand) clientCommand.execute(client, message, args);
+    if (clientCommand) clientCommand.execute(message, args);
 };
