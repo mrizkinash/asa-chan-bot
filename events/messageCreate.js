@@ -10,5 +10,12 @@ module.exports = (client, message) => {
 
     const clientCommand = client.commands.get(inputCommand);
 
-    if (clientCommand) clientCommand.execute(message, args);
+    if (clientCommand) {
+        try {
+            clientCommand.execute(message, args, client);
+        } catch (error) {
+            message.channel.send('An error occured on command execution');
+            console.error(error);
+        }
+    }
 };

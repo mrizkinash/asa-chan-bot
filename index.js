@@ -15,6 +15,7 @@ const client = new Client({
 
 client.commands = new Collection();
 client.events = new Collection();
+client.musicQueue = new Map();
 
 const handlersPath = path.join(__dirname, 'handlers');
 const handlerFiles = fs.readdirSync(handlersPath).filter(file => file.endsWith('.js'));

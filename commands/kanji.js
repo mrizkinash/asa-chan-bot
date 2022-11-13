@@ -5,9 +5,9 @@ const kanjiUtils = require('../utils/kanjiUtils.js');
 module.exports = {
     name: 'kanji',
     description: 'Search for a kanji/phrase in Jisho',
-    async execute(message, args) {
+    async execute(message, args, client) {
         if (args.length != 1 || Array.from(args[0]).some(char => !kanjiUtils.isJapanese(char))) {
-            message.channel.send('Usage: ```!kanji [kanji/japanese phrase]```');
+            message.channel.send(`Usage: \`\`\`${process.env.PREFIX}kanji [kanji / japanese phrase]\`\`\``);
             return;
         }
 
