@@ -3,7 +3,7 @@ module.exports = {
     description: 'Randomly chooses one argument from all arguments',
     execute(message, args, client) {
         if (args.length < 2) {
-            message.channel.send('Usage: ```!choose arg1 arg2 [arg3 argN]```');
+            message.channel.send(`Usage: \`\`\`${process.env.PREFIX}choose arg1 arg2 [arg3 argN]\`\`\``);
             return;
         }
 

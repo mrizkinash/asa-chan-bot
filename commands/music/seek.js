@@ -1,10 +1,9 @@
 const musicUtils = require('../../utils/musicUtils');
-const { AudioPlayerStatus } = require('@discordjs/voice');
 
 module.exports = {
     name: 'seek',
     description: 'Moves video duration to a certain point',
-    async execute(message, args, client) {
+    execute(message, args, client) {
         const voiceChannel = message.member.voice.channel;
         if (!voiceChannel) {
             message.channel.send('Get into the voice channel first');

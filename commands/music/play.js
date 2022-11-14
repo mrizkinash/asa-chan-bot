@@ -48,6 +48,8 @@ module.exports = {
                 title: vidInfo.video_details.title,
                 duration: vidInfo.video_details.durationInSec,
                 durationRaw: vidInfo.video_details.durationRaw,
+                skip: false,
+                loop: false,
             };
 
             if (!serverQueue) {
@@ -81,6 +83,17 @@ module.exports = {
 
                 player.on('stateChange', async (oldState, newState) => {
                     if ((oldState.status === AudioPlayerStatus.Playing) && (newState.status === AudioPlayerStatus.Idle)) {
+
+                        if (serverQueue.songs[serverQueue.currPos].loop) {
+                            serverQueue.songs[serverQueue.currPos].skip = false;
+                            message.channel.send(`Looping track no. ${serverQueue.currPos + 1}. Use the \`\`skip\`\` command to stop the loop`);
+                            --(serverQueue.currPos);
+                        }
+
+                        if (serverQueue.songs[serverQueue.currPos + 1]?.skip) {
+                            message.channel.send(`Skipping track no. ${++(serverQueue.currPos) + 1}...`);
+                            serverQueue.songs[serverQueue.currPos].skip = false;
+                        }
 
                         if (++(serverQueue.currPos) < serverQueue.songs.length) {
                             musicUtils.playMusic(serverQueue);

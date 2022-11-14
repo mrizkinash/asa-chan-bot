@@ -3,7 +3,7 @@ const musicUtils = require('../../utils/musicUtils');
 module.exports = {
     name: 'stop',
     description: 'Stops playing yt vid and leave the voice channel',
-    async execute(message, args, client) {
+    execute(message, args, client) {
         const voiceChannel = message.member.voice.channel;
         if (!voiceChannel) {
             message.channel.send('Get inside and carry me out, Ani~~');

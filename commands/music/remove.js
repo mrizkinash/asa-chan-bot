@@ -1,7 +1,7 @@
 module.exports = {
     name: 'remove',
     description: 'Removes designated track number from the queue',
-    async execute(message, args, client) {
+    execute(message, args, client) {
         const voiceChannel = message.member.voice.channel;
         if (!voiceChannel) {
             message.channel.send('Get into the voice channel first');
