@@ -7,8 +7,8 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setTitle('Available commands')
             .addFields(
-                { name: 'General', value: '``hey`` ``choose`` ``kanji``' },
-                { name: 'Music', value: '``play`` ``pause`` ``unpause`` ``skip`` ``jump`` ``nowplaying`` ``queue`` ``stop``' },
+                { name: 'General', value: '``hey`` ``choose`` ``kanji`` ``help``' },
+                { name: 'Music', value: '``play`` ``pause`` ``unpause`` ``skip`` ``jump`` ``seek`` ``nowplaying`` ``queue`` ``remove`` ``stop``' },
             );
 
         message.channel.send({ embeds: [embed] });

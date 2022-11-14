@@ -1,13 +1,14 @@
 const playdl = require('play-dl');
 const { createAudioResource } = require('@discordjs/voice');
 
-async function playMusic(serverQueue) {
-    const stream = await playdl.stream(serverQueue.songs[serverQueue.currPos].url);
+async function playMusic(serverQueue, seek = 0, toggleMessage = true) {
+    const stream = await playdl.stream(serverQueue.songs[serverQueue.currPos].url, { seek: seek });
     const resource = createAudioResource(stream.stream, {
         inputType: stream.type,
     });
     serverQueue.player.play(resource);
-    serverQueue.textChannel.send(`Now playing ***${serverQueue.songs[serverQueue.currPos].title}*** | ${serverQueue.songs[serverQueue.currPos].durationRaw} | Track no. ${serverQueue.currPos + 1}`);
+
+    if (toggleMessage) serverQueue.textChannel.send(`Now playing ***${serverQueue.songs[serverQueue.currPos].title}*** | ${serverQueue.songs[serverQueue.currPos].durationRaw} | Track no. ${serverQueue.currPos + 1}`);
 }
 
 function destroyConnection(musicQueue, serverQueue, guildId) {

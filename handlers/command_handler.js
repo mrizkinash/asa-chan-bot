@@ -1,15 +1,19 @@
 const fs = require('node:fs');
 
 module.exports = (client) => {
-    const commandFiles = fs.readdirSync('./commands/').filter((file) => file.endsWith('.js'));
+    const commandFolders = fs.readdirSync('./commands/');
 
-    for (const file of commandFiles) {
-        const command = require(`../commands/${file}`);
+    for (const folder of commandFolders) {
+        const commandFiles = fs.readdirSync(`./commands/${folder}/`);
 
-        if (command.name) {
-            client.commands.set(command.name, command);
-        } else {
-            continue;
+        for (const file of commandFiles) {
+            const command = require(`../commands/${folder}/${file}`);
+
+            if (command.name) {
+                client.commands.set(command.name, command);
+            } else {
+                continue;
+            }
         }
     }
 };

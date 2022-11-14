@@ -1,5 +1,5 @@
 const playdl = require('play-dl');
-const musicUtils = require('../utils/musicUtils');
+const musicUtils = require('../../utils/musicUtils');
 const { joinVoiceChannel, createAudioPlayer, NoSubscriberBehavior, AudioPlayerStatus } = require('@discordjs/voice');
 
 module.exports = {

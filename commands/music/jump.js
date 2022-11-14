@@ -1,4 +1,4 @@
-const musicUtils = require('../utils/musicUtils');
+const musicUtils = require('../../utils/musicUtils');
 const { AudioPlayerStatus } = require('@discordjs/voice');
 
 module.exports = {

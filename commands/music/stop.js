@@ -1,4 +1,4 @@
-const musicUtils = require('../utils/musicUtils');
+const musicUtils = require('../../utils/musicUtils');
 
 module.exports = {
     name: 'stop',

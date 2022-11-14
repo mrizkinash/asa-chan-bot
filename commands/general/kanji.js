@@ -1,5 +1,5 @@
 const JishoAPI = require('unofficial-jisho-api');
-const kanjiUtils = require('../utils/kanjiUtils.js');
+const kanjiUtils = require('../../utils/kanjiUtils.js');
 // TODO: Add reaction to give examples of words starting, ending, or containing the kanji
 
 module.exports = {
