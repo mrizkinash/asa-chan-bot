@@ -1,3 +1,5 @@
+const musicUtils = require('../../utils/musicUtils');
+
 module.exports = {
     name: 'loop',
     description: 'Loops currently playing song',
@@ -17,6 +19,14 @@ module.exports = {
         const serverQueue = musicQueue.get(message.guildId);
 
         if (serverQueue) {
+
+            if (serverQueue.currPos === serverQueue.songs.length) {
+                serverQueue.songs[--(serverQueue.currPos)].loop = true;
+                message.channel.send(`Looping track no. ${serverQueue.currPos + 1}...`);
+                musicUtils.playMusic(serverQueue);
+                return;
+            }
+
             serverQueue.songs[serverQueue.currPos].loop = true;
             message.channel.send(`Track no. ${serverQueue.currPos + 1} set to loop.`);
         } else {
