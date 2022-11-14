@@ -8,7 +8,7 @@ module.exports = (client, message) => {
     const args = message.content.slice(prefix.length).split(/ +/);
     const inputCommand = args.shift().toLowerCase();
 
-    const clientCommand = client.commands.get(inputCommand);
+    const clientCommand = client.commands.get(inputCommand) || client.commands.find(cmd => cmd.aliases?.includes(inputCommand));
 
     if (clientCommand) {
         try {
@@ -17,5 +17,7 @@ module.exports = (client, message) => {
             message.channel.send('An error occured on command execution');
             console.error(error);
         }
+    } else {
+        message.channel.send(`Invalid command. To see list of commands use: \`\`\`${process.env.PREFIX}help\`\`\``);
     }
 };
