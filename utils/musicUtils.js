@@ -2,7 +2,7 @@ const playdl = require('play-dl');
 const { createAudioResource } = require('@discordjs/voice');
 
 async function playMusic(serverQueue, seek = 0, toggleMessage = true) {
-    const stream = await playdl.stream(serverQueue.songs[serverQueue.currPos].url, { seek: seek, quality: 2 });
+    const stream = await playdl.stream(serverQueue.songs[serverQueue.currPos].url, { seek: seek, quality: 1 });
     const resource = createAudioResource(stream.stream, {
         inputType: stream.type,
     });
