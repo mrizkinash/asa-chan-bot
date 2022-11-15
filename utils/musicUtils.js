@@ -1,5 +1,6 @@
 const playdl = require('play-dl');
 const { createAudioResource } = require('@discordjs/voice');
+const { EmbedBuilder } = require('discord.js');
 
 async function playMusic(serverQueue, seek = 0, toggleMessage = true) {
     const stream = await playdl.stream(serverQueue.songs[serverQueue.currPos].url, { seek: seek });
@@ -19,7 +20,39 @@ function destroyConnection(musicQueue, serverQueue, guildId) {
     serverQueue.connection.destroy();
 }
 
+function createPaginatedQueue(queueTextArr, maxQueue) {
+
+    const embeds = [];
+    const pageCount = Math.ceil(queueTextArr.length / maxQueue);
+
+    if (pageCount === 1) {
+        const embed = new EmbedBuilder()
+            .addFields({
+                name: 'Current Music Queue',
+                value: queueTextArr.join('\n'),
+            });
+
+        embeds.push(embed);
+    } else {
+        let i = 0;
+
+        while (i < pageCount) {
+            const embed = new EmbedBuilder()
+                .addFields({
+                    name: 'Current Music Queue',
+                    value: queueTextArr.slice(i * maxQueue, (i + 1) * maxQueue).join('\n'),
+                })
+                .setFooter({ text: `Page ${++i} of ${pageCount}` });
+
+            embeds.push(embed);
+        }
+    }
+
+    return embeds;
+}
+
 module.exports = {
     playMusic,
     destroyConnection,
+    createPaginatedQueue,
 };
