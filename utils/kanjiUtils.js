@@ -65,10 +65,13 @@ function createPhraseEmbed(data) {
 }
 
 function getPaginatedEmbed(embedList) {
-    let i = 1;
-    for (const embed of embedList) {
-        embed.setFooter({ text: `Page ${i} of ${embedList.length}` });
-        i++;
+
+    if (embedList.length !== 1) {
+        let i = 1;
+        for (const embed of embedList) {
+            embed.setFooter({ text: `Page ${i} of ${embedList.length}` });
+            i++;
+        }
     }
 
     return embedList;

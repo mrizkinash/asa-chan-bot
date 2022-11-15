@@ -2,7 +2,7 @@ const { AudioPlayerStatus } = require('@discordjs/voice');
 
 module.exports = {
     name: 'unpause',
-    description: 'Unpauses the player and resumes current playing song',
+    description: 'Unpauses the player and resumes last played audio',
     execute(message, args, client) {
         const voiceChannel = message.member.voice.channel;
         if (!voiceChannel) {

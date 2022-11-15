@@ -4,7 +4,12 @@ const { joinVoiceChannel, createAudioPlayer, NoSubscriberBehavior, AudioPlayerSt
 
 module.exports = {
     name: 'play',
-    description: 'Joins into a voice chat and plays youtube vids',
+    description: 'Joins into a voice chat and plays youtube vids\'s audio',
+    details: 'This command accepts either keyword(s) or youtube url. \n' +
+        'If you enter keyword(s) as arguments Asa-chan will play the first thing she finds with that keyword. \n' +
+        'If you enter url Asa-chan will play that video\'s audio. \n' +
+        'As of now, the player doesn\'t support playlists. Update for that will be coming soon! ' +
+        'Do note that urls of vids from a playlist might be considered a playlist, and thus, would not load.',
     async execute(message, args, client) {
         const voiceChannel = message.member.voice.channel;
         if (!voiceChannel) {

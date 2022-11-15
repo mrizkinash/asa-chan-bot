@@ -2,7 +2,10 @@ const musicUtils = require('../../utils/musicUtils');
 
 module.exports = {
     name: 'seek',
-    description: 'Moves video duration to a certain point',
+    description: 'Moves audio duration to a certain point',
+    details: 'This command accepts a number representing the point you want to move the current playing audio to. ' +
+        'As of now the command only accepts arguments in seconds so to seek to the 1:40 point you need to input ``seek 100``. ' +
+        'QoL update for HH:MM:SS format will be coming soon!',
     execute(message, args, client) {
         const voiceChannel = message.member.voice.channel;
         if (!voiceChannel) {

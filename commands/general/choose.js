@@ -1,6 +1,7 @@
 module.exports = {
     name: 'choose',
     description: 'Randomly chooses one argument from all arguments',
+    details: 'This command accepts 2 or more arguments and will randomly pick one of them. Useful when you need that last push on deciding something',
     execute(message, args, client) {
         if (args.length < 2) {
             message.channel.send(`Usage: \`\`\`${process.env.PREFIX}choose arg1 arg2 [arg3 argN]\`\`\``);

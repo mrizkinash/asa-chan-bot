@@ -2,7 +2,12 @@ const { AudioPlayerStatus } = require('@discordjs/voice');
 
 module.exports = {
     name: 'skip',
-    description: 'Skips currently playing yt vid',
+    description: 'Skips currently playing audio / Set a track in the queue to be skipped next time it comes up',
+    details: 'You can either run this command without any arguments, or with the track no. in the queue you want to skip. \n' +
+        'When you run it without any arguments / with the track no. of the current playing audio, Asa-chan will skip the currently playing audio. \n' +
+        'If you put the track no. you want to skip, the next time that track comes up Asa-chan will skip it. ' +
+        'Asa-chan will only skip the track once so if you jumped around the queue after the track is skipped once it will play normally the next time it comes up. \n' +
+        'This command is also used to stop audios on loop.',
     execute(message, args, client) {
         const voiceChannel = message.member.voice.channel;
         if (!voiceChannel) {

@@ -4,6 +4,10 @@ const { AudioPlayerStatus } = require('@discordjs/voice');
 module.exports = {
     name: 'jump',
     description: 'Jumps to the designated track number',
+    details: 'This command accepts the track no. you want to jump to as an argument. ' +
+        'Note that if you jump to a track set to be skipped, Asa-chan will skip it ' +
+        '(e.g With 4545 songs in queue, Jun uses ``skip 1919``. ' +
+        'If Jun enters ``jump 1919`` Asa-chan will skip track 1919 if it haven\'t been skipped before).',
     execute(message, args, client) {
         const voiceChannel = message.member.voice.channel;
         if (!voiceChannel) {

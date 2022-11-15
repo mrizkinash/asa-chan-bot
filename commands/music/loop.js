@@ -2,7 +2,10 @@ const musicUtils = require('../../utils/musicUtils');
 
 module.exports = {
     name: 'loop',
-    description: 'Loops currently playing song',
+    description: 'Loops currently playing audio',
+    details: 'This command will loop the currently playing audio of the queue. ' +
+        'If this command is entered when the end of the queue is already reached, Asa-chan will loop the last audio in the queue. ' +
+        'To stop the loop, use the ``skip`` command.',
     execute(message, args, client) {
         const voiceChannel = message.member.voice.channel;
         if (!voiceChannel) {

@@ -2,7 +2,7 @@ const musicUtils = require('../../utils/musicUtils');
 
 module.exports = {
     name: 'stop',
-    description: 'Stops playing yt vid and leave the voice channel',
+    description: 'Stops playing audio and leave the voice channel',
     execute(message, args, client) {
         const voiceChannel = message.member.voice.channel;
         if (!voiceChannel) {

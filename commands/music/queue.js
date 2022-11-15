@@ -2,7 +2,11 @@ const musicUtils = require('../../utils/musicUtils');
 
 module.exports = {
     name: 'queue',
-    description: 'Shows the current music queue',
+    description: 'Shows the current audio queue',
+    details: 'This command shows you the current audio queue. ' +
+        'If there are more than 10 audios, Asa-chan will divide the queue into pages. ' +
+        'You can switch pages by pressing the reaction buttons under the queue. ' +
+        'Do note that only the user who used the ``queue`` command can switch the pages.',
     execute(message, args, client) {
         const voiceChannel = message.member.voice.channel;
         if (!voiceChannel) {

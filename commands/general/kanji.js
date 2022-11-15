@@ -5,6 +5,14 @@ const kanjiUtils = require('../../utils/kanjiUtils.js');
 module.exports = {
     name: 'kanji',
     description: 'Search for a kanji/phrase in Jisho',
+    details: 'This command accepts japanese text, searches jisho, and gives you the first result of the search. ' +
+        'You can enter hiragana, katakana, or kanjis as an argument. ' +
+        'For kanji inputs, it can either be individual kanjis (e.g. 愛), compound kanjis (e.g. 純愛), or mixed with hiragana (e.g. 愛す). \n' +
+        'In the case of individual kanjis Asa-chan will give you details of said kanji. ' +
+        'The details shown are details that the author deems necessary for his own study. \n' +
+        'And in the case of compound / kanjis mixed with hiragana, Asa-chan will show the meaning and you can switch pages to see the details of each kanji. \n' +
+        'You can switch pages by pressing the react buttons that shows up under the message. ' +
+        'Only the person who initiated the search can switch the pages.',
     async execute(message, args, client) {
         if (args.length != 1 || Array.from(args[0]).some(char => !kanjiUtils.isJapanese(char))) {
             message.channel.send(`Usage: \`\`\`${process.env.PREFIX}kanji [kanji / japanese phrase]\`\`\``);
@@ -39,6 +47,7 @@ module.exports = {
                 const finalEmbeds = kanjiUtils.getPaginatedEmbed([phraseEmbed, ...kanjisEmbed]);
 
                 message.channel.send({ embeds: [finalEmbeds[0]] }).then(msg => {
+                    if (finalEmbeds.length === 1) return;
                     const prev = '◀️';
                     const next = '▶️';
                     const reactions = [prev, next];

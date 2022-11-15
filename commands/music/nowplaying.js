@@ -2,7 +2,7 @@ const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
     name: 'nowplaying',
-    description: 'Pauses current playing song',
+    description: 'Shows currently playing audio',
     aliases: ['np'],
     execute(message, args, client) {
         const voiceChannel = message.member.voice.channel;

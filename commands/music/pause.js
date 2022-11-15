@@ -2,7 +2,7 @@ const { AudioPlayerStatus } = require('@discordjs/voice');
 
 module.exports = {
     name: 'pause',
-    description: 'Pauses current playing song',
+    description: 'Pauses currently playing audio',
     execute(message, args, client) {
         const voiceChannel = message.member.voice.channel;
         if (!voiceChannel) {
