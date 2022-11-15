@@ -89,7 +89,7 @@ module.exports = {
                 player.on('stateChange', async (oldState, newState) => {
                     if ((oldState.status === AudioPlayerStatus.Playing) && (newState.status === AudioPlayerStatus.Idle)) {
 
-                        if (serverQueue.songs[serverQueue.currPos].loop) {
+                        if (serverQueue.songs[serverQueue.currPos]?.loop) {
                             serverQueue.songs[serverQueue.currPos].skip = false;
                             message.channel.send(`Looping track no. ${serverQueue.currPos + 1}. Use the \`\`skip\`\` command to stop the loop`);
                             --(serverQueue.currPos);
