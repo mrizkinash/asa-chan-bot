@@ -26,6 +26,7 @@ module.exports = {
         if (serverQueue?.player.state.status === AudioPlayerStatus.Playing) {
             if (args.length === 0) {
                 serverQueue.songs[serverQueue.currPos].loop = false;
+                serverQueue.loopMode = false;
                 serverQueue.player.stop();
             } else {
 
@@ -36,6 +37,7 @@ module.exports = {
 
                 if ((trackNo - 1) === serverQueue.currPos) {
                     serverQueue.songs[serverQueue.currPos].loop = false;
+                    serverQueue.loopMode = false;
                     serverQueue.player.stop();
                     return;
                 }

@@ -7,9 +7,8 @@ module.exports = {
     description: 'Joins into a voice chat and plays youtube vids\'s audio',
     details: 'This command accepts either keyword(s) or youtube url. \n' +
         'If you enter keyword(s) as arguments Asa-chan will play the first thing she finds with that keyword. \n' +
-        'If you enter url Asa-chan will play that video\'s audio. \n' +
-        'As of now, the player doesn\'t support playlists. Update for that will be coming soon! ' +
-        'Do note that urls of vids from a playlist might be considered a playlist, and thus, would not load.',
+        'If you enter a video url Asa-chan will play that video\'s audio. \n' +
+        'If you enter a playlist url Asa-chan will load all the videos in that playlist into the queue.',
     async execute(message, args, client) {
         const voiceChannel = message.member.voice.channel;
         if (!voiceChannel) {
@@ -26,11 +25,6 @@ module.exports = {
         let url = null;
         const ytVal = playdl.yt_validate(args[0]);
 
-        if (ytVal === 'playlist') {
-            message.channel.send('Current version doesn\'t support playlists yet');
-            return;
-        }
-
         if (ytVal && args[0].startsWith('https')) {
             url = args[0];
         } else {
@@ -44,18 +38,46 @@ module.exports = {
 
         if (url) {
 
+            const songs = [];
             const musicQueue = client.musicQueue;
             let serverQueue = musicQueue.get(message.guildId);
 
-            const vidInfo = await playdl.video_info(url);
-            const song = {
-                url: url,
-                title: vidInfo.video_details.title,
-                duration: vidInfo.video_details.durationInSec,
-                durationRaw: vidInfo.video_details.durationRaw,
-                skip: false,
-                loop: false,
-            };
+            if (ytVal === 'video' || ytVal === 'search') {
+                try {
+                    const vidInfo = await playdl.video_info(url);
+                    const song = new musicUtils.Song(
+                        url,
+                        vidInfo.video_details.title,
+                        vidInfo.video_details.durationInSec,
+                        vidInfo.video_details.durationRaw,
+                    );
+                    songs.push(song);
+                } catch (error) {
+                    message.channel.send('Error loading audio');
+                    console.error(error);
+                    return;
+                }
+            } else if (ytVal === 'playlist') {
+
+                try {
+                    const playlist = await playdl.playlist_info(url);
+                    const playlistItems = await playlist.all_videos();
+
+                    for (const item of playlistItems) {
+                        const song = new musicUtils.Song(
+                            item.url,
+                            item.title,
+                            item.durationInSec,
+                            item.durationRaw,
+                        );
+                        songs.push(song);
+                    }
+                } catch (error) {
+                    message.channel.send('Error loading playlist');
+                    console.error(error);
+                    return;
+                }
+            }
 
             if (!serverQueue) {
 
@@ -63,10 +85,10 @@ module.exports = {
                     textChannel: message.channel,
                     connection: null,
                     player: null,
-                    songs: [],
+                    songs: songs,
                     currPos: 0,
+                    loopMode: false,
                 };
-                queueConstruct.songs.push(song);
 
                 const connection = joinVoiceChannel({
                     channelId: voiceChannel.id,
@@ -91,7 +113,10 @@ module.exports = {
 
                         if (serverQueue.songs[serverQueue.currPos]?.loop) {
                             serverQueue.songs[serverQueue.currPos].skip = false;
-                            message.channel.send(`Looping track no. ${serverQueue.currPos + 1}. Use the \`\`skip\`\` command to stop the loop`);
+                            if (!(serverQueue.loopMode)) {
+                                message.channel.send(`Looping track no. ${serverQueue.currPos + 1}. Use the \`\`skip\`\` command to stop the loop`);
+                            }
+                            serverQueue.loopMode = true;
                             --(serverQueue.currPos);
                         }
 
@@ -101,7 +126,7 @@ module.exports = {
                         }
 
                         if (++(serverQueue.currPos) < serverQueue.songs.length) {
-                            musicUtils.playMusic(serverQueue);
+                            musicUtils.playMusic(serverQueue, 0, !serverQueue.loopMode);
                         } else {
                             message.channel.send('Reached the end of playlist');
                         }
@@ -115,9 +140,14 @@ module.exports = {
                 });
 
             } else {
-                serverQueue.songs.push(song);
+                serverQueue.songs.push(...songs);
             }
-            message.channel.send(`***${song.title}*** added to queue | ${song.durationRaw} | Track no. ${serverQueue.songs.length}`);
+
+            if (songs.length === 1) {
+                message.channel.send(`***${songs[0].title}*** added to queue | ${songs[0].durationRaw} | Track no. ${serverQueue.songs.length}`);
+            } else if (songs.length > 1) {
+                message.channel.send(`***${songs.length}*** audios added to queue`);
+            }
 
             if (serverQueue.player.state.status === AudioPlayerStatus.Idle) {
                 musicUtils.playMusic(serverQueue);

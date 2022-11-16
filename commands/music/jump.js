@@ -37,6 +37,7 @@ module.exports = {
 
                 if (serverQueue.songs[serverQueue.currPos].loop && serverQueue.currPos !== trackNo - 1) {
                     serverQueue.songs[serverQueue.currPos].loop = false;
+                    serverQueue.loopMode = false;
                     message.channel.send(`Track no. ${serverQueue.currPos + 1}'s loop set to off`);
                 }
                 serverQueue.currPos = trackNo - 2;

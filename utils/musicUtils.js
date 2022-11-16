@@ -2,6 +2,17 @@ const playdl = require('play-dl');
 const { createAudioResource } = require('@discordjs/voice');
 const { EmbedBuilder } = require('discord.js');
 
+class Song {
+    constructor(url, title, duration, durationRaw) {
+        this.url = url;
+        this.title = title;
+        this.duration = duration;
+        this.durationRaw = durationRaw;
+        this.skip = false;
+        this.loop = false;
+    }
+}
+
 async function playMusic(serverQueue, seek = 0, toggleMessage = true) {
     const stream = await playdl.stream(serverQueue.songs[serverQueue.currPos].url, { seek: seek });
     const resource = createAudioResource(stream.stream, {
@@ -52,6 +63,7 @@ function createPaginatedQueue(queueTextArr, maxQueue) {
 }
 
 module.exports = {
+    Song,
     playMusic,
     destroyConnection,
     createPaginatedQueue,
