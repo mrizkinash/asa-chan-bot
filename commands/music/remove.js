@@ -28,7 +28,7 @@ module.exports = {
                 return;
             }
 
-            if (trackNo < serverQueue.currPos) serverQueue.currPos -= 1;
+            if (trackNo < serverQueue.currPos + 1) serverQueue.currPos -= 1;
             serverQueue.songs.splice(trackNo - 1, 1);
 
             message.channel.send(`Removed track no. ${trackNo} from the queue`);
