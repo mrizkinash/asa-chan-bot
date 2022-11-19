@@ -39,7 +39,7 @@ function createKanjiEmbed(data) {
 
 function createPhraseEmbed(data) {
     const reading = data.japanese
-        .map(japanese => japanese.word.concat(` (${japanese.reading})`))
+        .map(japanese => (japanese.word) ? japanese.word.concat(` (${japanese.reading})`) : japanese.reading)
         .join(', ');
 
     let meaning = '';
